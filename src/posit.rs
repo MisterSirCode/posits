@@ -1,4 +1,4 @@
-use std::convert;
+use std::{convert, fmt::{Display, Formatter, Result}};
 
 pub mod util;
 
@@ -25,12 +25,30 @@ impl From<p16> for f32 {
     }
 }
 
+impl From<&p16> for f32 {
+    fn from(value: &p16) -> Self {
+        f32::from(*value)
+    }
+}
+
 impl From<p16> for f64 {
     fn from(value: p16) -> Self {
         let comp = value.components();
         let reg = f64::powf(256f64, -(comp[0] as f64)); // 256^-regime
         let exp = f64::powf(2f64, comp[1] as f64); // 2^exponent
         reg * exp * (1f64 + (comp[2] as f64) / 256f64)
+    }
+}
+
+impl From<&p16> for f64 {
+    fn from(value: &p16) -> Self {
+        f64::from(*value)
+    }
+}
+
+impl Display for p16 {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        write!(f, "{:}p16", f64::from(self))
     }
 }
 
