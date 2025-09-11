@@ -4,15 +4,6 @@ pub struct p16 {
     pub bits: u16
 }
 
-// impl From<p16> for f16 {
-//     fn from(value: p16) -> Self {
-//         let comp = value.components();
-//         let reg = f16::powf(256f16, -(comp[0] as f16)); // 256^-regime
-//         let exp = f16::powf(2f16, comp[1] as f16); // 2^exponent
-//         reg * exp * (1f16 + (comp[2] as f16) / 256f16)
-//     }
-// }
-
 impl From<p16> for f32 {
     fn from(value: p16) -> Self {
         p16::as_float(&value) as f32
@@ -50,7 +41,7 @@ impl From<&u16> for p16 {
 }
 
 impl p16 {
-    const DES: u16 = 2; // Default e_s = 2.. 2^2^es = 16
+    const DES: u16 = 2; // Default e_s = 2 - Highest precise ES
 
     fn twos_comp(bits: u16) -> u16 {
         !(bits) + 1
@@ -116,7 +107,6 @@ impl p16 {
 
     /// Internal To-Float Function
     fn int_as_float(bits: u16, ES: u16) -> f64 {
-        println!("{:016b}", p16::twos_comp(bits));
         let comp = p16::int_components(bits, ES);
         let reg: f64;
         let exp: f64;
@@ -134,7 +124,7 @@ impl p16 {
     /// Get the Components of the current Posit with a supplied ES
     pub fn as_float(&self) -> f64 {
         if self.sign() == -1 {
-            p16::int_as_float(p16::twos_comp(self.bits), p16::DES)
+            -p16::int_as_float(p16::twos_comp(self.bits), p16::DES)
         } else {
             p16::int_as_float(self.bits, p16::DES)
         }
@@ -143,7 +133,7 @@ impl p16 {
     /// Get the Components of the current Posit with a supplied ES
     pub fn as_float_es(&self, ES: u16) -> f64 {
         if self.sign() == -1 {
-            p16::int_as_float(p16::twos_comp(self.bits), ES)
+            -p16::int_as_float(p16::twos_comp(self.bits), ES)
         } else {
             p16::int_as_float(self.bits, ES)
         }
