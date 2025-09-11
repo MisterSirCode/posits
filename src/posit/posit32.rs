@@ -1,0 +1,92 @@
+#[derive(Copy, Clone, Debug)]
+pub struct p16 {
+    pub bits: u16
+}
+
+// impl From<p16> for f16 {
+//     fn from(value: p16) -> Self {
+//         let comp = value.components();
+//         let reg = f16::powf(256f16, -(comp[0] as f16)); // 256^-regime
+//         let exp = f16::powf(2f16, comp[1] as f16); // 2^exponent
+//         reg * exp * (1f16 + (comp[2] as f16) / 256f16)
+//     }
+// }
+
+impl From<p16> for f32 {
+    fn from(value: p16) -> Self {
+        value.as_float() as f32
+    }
+}
+
+impl From<&p16> for f32 {
+    fn from(value: &p16) -> Self {
+        f32::from(*value)
+    }
+}
+
+impl From<p16> for f64 {
+    fn from(value: p16) -> Self {
+        value.as_float()
+    }
+}
+
+impl From<&p16> for f64 {
+    fn from(value: &p16) -> Self {
+        f64::from(*value)
+    }
+}
+
+impl From<u16> for p16 {
+    fn from(bits: u16) -> Self {
+        p16 { bits }
+    }
+}
+
+impl From<&u16> for p16 {
+    fn from(value: &u16) -> Self {
+        p16::from(*value)
+    }
+}
+
+impl p16 {
+    const ES: u16 = 2; // e_s = 2.. 2^2^es = 16
+
+    pub fn sign(&self) -> i8 {
+        if self.bits == 0 { 0 } // 0 Case
+        else if self.bits & 0x4000 == 0x4000 { -1 } // Match MSB - Negative
+        else { 1 } // Positive
+    }
+
+    fn to_exp(&self) -> u16 {
+        let trunc = self.bits << 1; // Remove Sign
+        let t: u16;
+        if trunc & 0x8000 == 0x8000 { // Check if using leading zeroes or ones
+            t = trunc.leading_ones() as u16;
+        } else {
+            t = trunc.leading_zeros() as u16;
+        }
+        t + 2 // Account for sign and regime tail
+    }
+
+    pub fn components(&self) -> [u16;4] {
+        let sn = self.sign();
+        let exp_len = self.to_exp();
+        if sn == 0 { 
+            return [0u16;4]; // Ignore 0 case - Cancel and move on
+        }
+        let reg = exp_len - 2; // Regime is the number of 0s / 1s...
+        let les = p16::ES; // Get ES
+        let exp = (self.bits << exp_len) >> (15 - les) + 1; // Pull out exponent bits
+        let frac_shift = exp_len;
+        let frc = (self.bits << frac_shift) >> 0; // Pull out fractional bits
+        [reg, les, exp, frc]
+    }
+
+    pub fn as_float(&self) -> f64 {
+        let comp = self.components();
+        let reg = f64::powf(256f64, -((comp[0] - 1) as f64)); // 256^-regime
+        let exp = f64::powf(2f64, comp[2] as f64); // 2^exponent
+        let frc = 1f64 + (comp[3] as f64) / (f64::powf(2f64, (16 - comp[0] - 2 - comp[1]) as f64));
+        reg * exp * frc
+    }
+}
