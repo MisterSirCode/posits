@@ -43,6 +43,7 @@ impl From<&u16> for p16 {
 impl p16 {
     const DES: u16 = 2; // Default e_s = 2 - Highest precise ES
 
+    /// Get the two's complement
     fn twos_comp(bits: u16) -> u16 {
         !(bits) + 1
     }
