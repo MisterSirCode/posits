@@ -1,12 +1,11 @@
-pub mod util;
-pub mod posit8;
-pub mod posit16;
-pub mod posit32;
-pub mod posit64;
-use posit8::p8;
-use posit16::p16;
-use posit32::p32;
-use posit64::p64;
+mod posit8;
+mod posit16;
+mod posit32;
+mod posit64;
+pub use posit8::p8;
+pub use posit16::p16;
+pub use posit32::p32;
+pub use posit64::p64;
 
 pub struct PositUtils { }
 
