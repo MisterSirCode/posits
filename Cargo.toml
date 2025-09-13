@@ -2,6 +2,6 @@
 name = "posits"
 version = "0.1.0"
 description = "An indev lightweight converter and numeric type extension for Posits"
-license = "MIT License"
+license = "./LICENSE"
 repository = "https://github.com/MisterSirCode/posits"
 edition = "2024"
