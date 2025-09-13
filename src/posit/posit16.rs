@@ -88,7 +88,7 @@ impl p16 {
         let exp: u16; // Pull out exponent bits
         if ES == 0 {
             exp = 0;
-        } else  {
+        } else {
             exp = (bits << exp_len) >> (15 - ES) + 1;
         }
         let frac_shift = exp_len + ES;

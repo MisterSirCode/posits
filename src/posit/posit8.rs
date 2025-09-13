@@ -88,7 +88,7 @@ impl p8 {
         let exp: u8; // Pull out exponent bits
         if ES == 0 {
             exp = 0;
-        } else  {
+        } else {
             exp = (bits << exp_len) >> (7 - ES) + 1;
         }
         let frac_shift = exp_len + ES;
