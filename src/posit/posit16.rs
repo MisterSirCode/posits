@@ -1,5 +1,6 @@
 /// Define a generic 16-bit Posit
 #[derive(Copy, Clone, Debug)]
+#[expect(non_camel_case_types)]
 pub struct p16 {
     pub bits: u16
 }

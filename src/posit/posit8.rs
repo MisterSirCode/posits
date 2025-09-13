@@ -1,5 +1,6 @@
 /// Define a generic 8-bit Posit
 #[derive(Copy, Clone, Debug)]
+#[expect(non_camel_case_types)]
 pub struct p8 {
     pub bits: u8
 }

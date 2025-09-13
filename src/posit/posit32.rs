@@ -1,5 +1,6 @@
 /// Define a generic 32-bit Posit
 #[derive(Copy, Clone, Debug)]
+#[expect(non_camel_case_types)]
 pub struct p32 {
     pub bits: u32
 }

@@ -1,4 +1,5 @@
 /// Define a generic 64-bit Posit
+#[expect(non_camel_case_types)]
 #[derive(Copy, Clone, Debug)]
 pub struct p64 {
     pub bits: u64
