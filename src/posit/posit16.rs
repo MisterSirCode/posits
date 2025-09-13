@@ -42,7 +42,8 @@ impl From<&u16> for p16 {
 }
 
 impl p16 {
-    const DES: u16 = 2; // Default e_s = 2 - Highest precise es
+    pub const DES: u16 = 2; // Default e_s = 2 - Highest precise es
+    pub const PI: p16 = p16 { bits: 0b0100110010010001 };
 
     /// Get the two's complement
     fn twos_comp(bits: u16) -> u16 {
@@ -64,12 +65,11 @@ impl p16 {
     /// Internal Exponent Bits Distance Function
     fn int_to_exp(bits: u16) -> u16 {
         let trunc = bits << 1; // Remove Sign
-        let t: u16;
-        if trunc & 0x8000 == 0x8000 { // Check if using leading zeroes or ones
-            t = trunc.leading_ones() as u16;
+        let t: u16 = if trunc & 0x8000 == 0x8000 { // Check if using leading zeroes or ones
+            trunc.leading_ones() as u16
         } else {
-            t = trunc.leading_zeros() as u16;
-        }
+            trunc.leading_zeros() as u16
+        };
         t + 2 // Account for sign and regime tail
     }
 
@@ -86,12 +86,9 @@ impl p16 {
             return [0u16;4]; // Ignore 0 case - Cancel and move on
         }
         let reg = exp_len - 2; // Regime is the number of 0s / 1s...
-        let exp: u16; // Pull out exponent bits
-        if es == 0 {
-            exp = 0;
-        } else {
-            exp = (bits << exp_len) >> ((15 - es) + 1);
-        }
+        let exp: u16 = if es == 0 { 0 } else {
+            (bits << exp_len) >> ((15 - es) + 1) // Pull out exponent bits
+        };
         let frac_shift = exp_len + es;
         let frc = (bits << frac_shift) >> frac_shift; // Pull out fractional bits
         [reg, es, exp, frc]

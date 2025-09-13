@@ -42,7 +42,8 @@ impl From<&u32> for p32 {
 }
 
 impl p32 {
-    const DES: u32 = 3; // Default e_s = 3 - Highest precise es
+    pub const DES: u32 = 3; // Default e_s = 3 - Highest precise es
+    pub const PI: p32 = p32 { bits: 0b01000110010010000111111011010101 };
 
     /// Get the two's complement
     fn twos_comp(bits: u32) -> u32 {
@@ -64,12 +65,11 @@ impl p32 {
     /// Internal Exponent Bits Distance Function
     fn int_to_exp(bits: u32) -> u32 {
         let trunc = bits << 1; // Remove Sign
-        let t: u32;
-        if trunc & 0x80000000 == 0x80000000 { // Check if using leading zeroes or ones
-            t = trunc.leading_ones();
+        let t: u32 = if trunc & 0x80000000 == 0x80000000 { // Check if using leading zeroes or ones
+            trunc.leading_ones()
         } else {
-            t = trunc.leading_zeros();
-        }
+            trunc.leading_zeros()
+        };
         t + 2 // Account for sign and regime tail
     }
 
@@ -86,12 +86,9 @@ impl p32 {
             return [0u32;4]; // Ignore 0 case - Cancel and move on
         }
         let reg = exp_len - 2; // Regime is the number of 0s / 1s...
-        let exp: u32; // Pull out exponent bits
-        if es == 0 {
-            exp = 0;
-        } else {
-            exp = (bits << exp_len) >> ((31 - es) + 1);
-        }
+        let exp: u32 = if es == 0 { 0 } else {
+            (bits << exp_len) >> ((31 - es) + 1) // Pull out exponent bits
+        };
         let frac_shift = exp_len + es;
         let frc = (bits << frac_shift) >> frac_shift; // Pull out fractional bits
         [reg, es, exp, frc]

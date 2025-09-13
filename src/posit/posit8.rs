@@ -42,7 +42,8 @@ impl From<&u8> for p8 {
 }
 
 impl p8 {
-    const DES: u8 = 1; // Default e_s = 1 - Highest precise es
+    pub const DES: u8 = 1; // Default e_s = 1 - Highest precise es
+    pub const PI: p8 = p8 { bits: 0b01011001 };
 
     /// Get the two's complement
     fn twos_comp(bits: u8) -> u8 {
@@ -64,12 +65,11 @@ impl p8 {
     /// Internal Exponent Bits Distance Function
     fn int_to_exp(bits: u8) -> u8 {
         let trunc = bits << 1; // Remove Sign
-        let t: u8;
-        if trunc & 0x80 == 0x80 { // Check if using leading zeroes or ones
-            t = trunc.leading_ones() as u8;
+        let t: u8 = if trunc & 0x80 == 0x80 { // Check if using leading zeroes or ones
+            trunc.leading_ones() as u8
         } else {
-            t = trunc.leading_zeros() as u8;
-        }
+            trunc.leading_zeros() as u8
+        };
         t + 2 // Account for sign and regime tail
     }
 
@@ -86,12 +86,9 @@ impl p8 {
             return [0u8;4]; // Ignore 0 case - Cancel and move on
         }
         let reg = exp_len - 2; // Regime is the number of 0s / 1s...
-        let exp: u8; // Pull out exponent bits
-        if es == 0 {
-            exp = 0;
-        } else {
-            exp = (bits << exp_len) >> ((7 - es) + 1);
-        }
+        let exp: u8 = if es == 0 { 0 } else {
+            (bits << exp_len) >> ((7 - es) + 1) // Pull out exponent bits
+        };
         let frac_shift = exp_len + es;
         let frc = (bits << frac_shift) >> frac_shift; // Pull out fractional bits
         [reg, es, exp, frc]

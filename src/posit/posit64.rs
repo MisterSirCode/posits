@@ -42,7 +42,8 @@ impl From<&u64> for p64 {
 }
 
 impl p64 {
-    const DES: u64 = 4; // Default e_s = 4 - Highest precise es
+    pub const DES: u64 = 4; // Default e_s = 4 - Highest precise es
+    pub const PI: p64 = p64 { bits: 0b01000011001001000011111101101010_10001000100001011010001100000000 };
 
     /// Get the two's complement
     fn twos_comp(bits: u64) -> u64 {
@@ -64,12 +65,11 @@ impl p64 {
     /// Internal Exponent Bits Distance Function
     fn int_to_exp(bits: u64) -> u64 {
         let trunc = bits << 1; // Remove Sign
-        let t: u64;
-        if trunc & 0x8000000000000000 == 0x8000000000000000 { // Check if using leading zeroes or ones
-            t = trunc.leading_ones() as u64;
+        let t: u64 = if trunc & 0x8000000000000000 == 0x8000000000000000 { // Check if using leading zeroes or ones
+            trunc.leading_ones() as u64
         } else {
-            t = trunc.leading_zeros() as u64;
-        }
+            trunc.leading_zeros() as u64
+        };
         t + 2 // Account for sign and regime tail
     }
 
@@ -86,12 +86,9 @@ impl p64 {
             return [0u64;4]; // Ignore 0 case - Cancel and move on
         }
         let reg = exp_len - 2; // Regime is the number of 0s / 1s...
-        let exp: u64; // Pull out exponent bits
-        if es == 0 {
-            exp = 0;
-        } else {
-            exp = (bits << exp_len) >> ((63 - es) + 1);
-        }
+        let exp: u64 = if es == 0 { 0 } else {
+            (bits << exp_len) >> ((63 - es) + 1) // Pull out exponent bits
+        };
         let frac_shift = exp_len + es;
         let frc = (bits << frac_shift) >> frac_shift; // Pull out fractional bits
         [reg, es, exp, frc]
