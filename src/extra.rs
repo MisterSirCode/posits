@@ -4,6 +4,7 @@ use super::posit16::p16;
 use super::posit32::p32;
 use super::posit64::p64;
 
+#[test]
 /// Run test cases of every major variation of every posit conversion type
 pub fn unit_tests() {
     // Posit 8 Unit Tests
