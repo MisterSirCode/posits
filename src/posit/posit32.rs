@@ -66,9 +66,9 @@ impl p32 {
         let trunc = bits << 1; // Remove Sign
         let t: u32;
         if trunc & 0x80000000 == 0x80000000 { // Check if using leading zeroes or ones
-            t = trunc.leading_ones() as u32;
+            t = trunc.leading_ones();
         } else {
-            t = trunc.leading_zeros() as u32;
+            t = trunc.leading_zeros();
         }
         t + 2 // Account for sign and regime tail
     }
@@ -90,7 +90,7 @@ impl p32 {
         if es == 0 {
             exp = 0;
         } else {
-            exp = (bits << exp_len) >> (31 - es) + 1;
+            exp = (bits << exp_len) >> ((31 - es) + 1);
         }
         let frac_shift = exp_len + es;
         let frc = (bits << frac_shift) >> frac_shift; // Pull out fractional bits

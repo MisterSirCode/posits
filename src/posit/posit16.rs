@@ -90,7 +90,7 @@ impl p16 {
         if es == 0 {
             exp = 0;
         } else {
-            exp = (bits << exp_len) >> (15 - es) + 1;
+            exp = (bits << exp_len) >> ((15 - es) + 1);
         }
         let frac_shift = exp_len + es;
         let frc = (bits << frac_shift) >> frac_shift; // Pull out fractional bits
