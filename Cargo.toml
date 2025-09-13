@@ -1,4 +1,5 @@
 [package]
 name = "posits"
 version = "0.1.0"
+description = "An indev lightweight converter and numeric type extension for Posits"
 edition = "2024"

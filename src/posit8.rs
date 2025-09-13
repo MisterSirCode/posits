@@ -2,6 +2,7 @@
 #[derive(Copy, Clone, Debug)]
 #[expect(non_camel_case_types)]
 pub struct p8 {
+    /// The raw bits of the posit
     pub bits: u8
 }
 
@@ -42,7 +43,9 @@ impl From<&u8> for p8 {
 }
 
 impl p8 {
-    pub const DES: u8 = 1; // Default e_s = 1 - Highest precise es
+    /// Default es value. Highest precision es available for this type
+    pub const DES: u8 = 1;
+    /// The Posit equivalent of Pi for this type
     pub const PI: p8 = p8 { bits: 0b01011001 };
 
     /// Get the two's complement
