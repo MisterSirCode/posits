@@ -41,7 +41,7 @@ impl From<&u64> for p64 {
 }
 
 impl p64 {
-    const DES: u64 = 4; // Default e_s = 4 - Highest precise ES
+    const DES: u64 = 4; // Default e_s = 4 - Highest precise es
 
     /// Get the two's complement
     fn twos_comp(bits: u64) -> u64 {
@@ -78,7 +78,7 @@ impl p64 {
     }
 
     /// Internal Components Function
-    fn int_components(bits: u64, ES: u64) -> [u64;4] {
+    fn int_components(bits: u64, es: u64) -> [u64;4] {
         let sn = p64::int_sign(bits);
         let exp_len = p64::int_to_exp(bits);
         if sn == 0 { 
@@ -86,32 +86,32 @@ impl p64 {
         }
         let reg = exp_len - 2; // Regime is the number of 0s / 1s...
         let exp: u64; // Pull out exponent bits
-        if ES == 0 {
+        if es == 0 {
             exp = 0;
         } else {
-            exp = (bits << exp_len) >> (63 - ES) + 1;
+            exp = (bits << exp_len) >> (63 - es) + 1;
         }
-        let frac_shift = exp_len + ES;
+        let frac_shift = exp_len + es;
         let frc = (bits << frac_shift) >> frac_shift; // Pull out fractional bits
-        [reg, ES, exp, frc]
+        [reg, es, exp, frc]
     }
 
-    /// Get the Components of the current Posit with a supplied ES
+    /// Get the Components of the current Posit with a supplied es
     pub fn components(&self) -> [u64;4] {
         p64::int_components(self.bits, p64::DES)
     }
 
-    /// Get the Components of the current Posit with a supplied ES
-    pub fn components_es(&self, ES: u64) -> [u64;4] {
-        p64::int_components(self.bits, ES)
+    /// Get the Components of the current Posit with a supplied es
+    pub fn components_es(&self, es: u64) -> [u64;4] {
+        p64::int_components(self.bits, es)
     }
 
     /// Internal To-Float Function
-    fn int_as_float(bits: u64, ES: u64) -> f64 {
-        let comp = p64::int_components(bits, ES);
+    fn int_as_float(bits: u64, es: u64) -> f64 {
+        let comp = p64::int_components(bits, es);
         let reg: f64;
         let exp: f64;
-        if ES == 0 { // Special case for ES 0
+        if es == 0 { // Special case for es 0
             reg = 1f64;
             exp = 2f64;
         } else {
@@ -122,7 +122,7 @@ impl p64 {
         reg * exp * frc
     }
 
-    /// Get the Components of the current Posit with a supplied ES
+    /// Get the Components of the current Posit with a supplied es
     pub fn as_float(&self) -> f64 {
         if self.sign() == -1 {
             -p64::int_as_float(p64::twos_comp(self.bits), p64::DES)
@@ -131,12 +131,12 @@ impl p64 {
         }
     }
 
-    /// Get the Components of the current Posit with a supplied ES
-    pub fn as_float_es(&self, ES: u64) -> f64 {
+    /// Get the Components of the current Posit with a supplied es
+    pub fn as_float_es(&self, es: u64) -> f64 {
         if self.sign() == -1 {
-            -p64::int_as_float(p64::twos_comp(self.bits), ES)
+            -p64::int_as_float(p64::twos_comp(self.bits), es)
         } else {
-            p64::int_as_float(self.bits, ES)
+            p64::int_as_float(self.bits, es)
         }
     }
 }
