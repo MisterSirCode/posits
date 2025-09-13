@@ -32,13 +32,12 @@ impl PositUtils {
         assert_eq!(p32::from(0b10010110110111100000010010101100).as_float_es(0), -3.141592651605606); // p32_0 Custom ES Special-Case Negative
         assert_eq!(p32::from(0b01011001001000011111101101010100).as_float_es(1), 3.141592651605606);  // p32_1 Custom ES
         assert_eq!(p32::from(0b10100110110111100000010010101100).as_float_es(1), -3.141592651605606); // p32_1 Custom ES Negative
-        // assert_eq!(f64::from(p16::from()), );
-        // assert_eq!(f64::from(p16::from()), );
-        // assert_eq!(f64::from(p16::from()), );
-        // assert_eq!(f64::from(p16::from()), );
-        // assert_eq!(f64::from(p16::from()), );
-        // assert_eq!(f64::from(p16::from()), );
-        // assert_eq!(f64::from(p16::from()), );
-        // assert_eq!(f64::from(p16::from()), );
+        // Posit 64 Unit Tests
+        assert_eq!(f64::from(p64::from(0b01000011001001000011111101101010_10001000100001011010001100000000)), 3.141592653589793);      // p64_4 Default
+        assert_eq!(f64::from(p64::from(0b10111100110110111100000010010101_01110111011110100101110100000000)), -3.141592653589793);     // p64_4 Default Negative
+        assert_eq!(p64::from(0b01101001001000011111101101010100_01000100001011010001100000000000).as_float_es(0), 3.141592653589793);  // p64_0 Custom ES Special-Case
+        assert_eq!(p64::from(0b10010110110111100000010010101011_10111011110100101110100000000000).as_float_es(0), -3.141592653589793); // p64_0 Custom ES Special-Case Negative
+        assert_eq!(p64::from(0b01001100100100001111110110101010_00100010000101101000110000000000).as_float_es(2), 3.141592653589793);  // p64_2 Custom ES
+        assert_eq!(p64::from(0b10110011011011110000001001010101_11011101111010010111010000000000).as_float_es(2), -3.141592653589793); // p64_2 Custom ES Negative
     }
 }
