@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 /// Define a generic 8-bit Posit
 #[derive(Copy, Clone, Debug)]
 #[expect(non_camel_case_types)]
@@ -5,6 +7,17 @@ pub struct p8 {
     /// The raw bits of the posit
     pub bits: u8
 }
+
+// Algebra
+
+// impl Add for p8 {
+//     type Output = p8;
+//     fn add(self, rhs: Self) -> Self::Output {
+        
+//     }
+// }
+
+// Converters
 
 impl From<p8> for f32 {
     fn from(value: p8) -> Self {
