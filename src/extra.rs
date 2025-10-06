@@ -1,7 +1,12 @@
+#[cfg(test)]
 use core::f64;
+#[cfg(test)]
 use super::posit8::p8;
+#[cfg(test)]
 use super::posit16::p16;
+#[cfg(test)]
 use super::posit32::p32;
+#[cfg(test)]
 use super::posit64::p64;
 
 #[test]
